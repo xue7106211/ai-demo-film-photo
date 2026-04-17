@@ -1,0 +1,613 @@
+.pageRoot {
+  background: var(--color-page);
+}
+
+.viewport {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  isolation: isolate;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
+  background: var(--color-page);
+  cursor: grab;
+}
+
+.viewportDragging {
+  cursor: grabbing;
+}
+
+.loadingOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 12;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding-inline: var(--space-8);
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: var(--text-label);
+  transition: opacity 700ms var(--ease-standard);
+}
+
+.loadingOverlayHidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loadingDots {
+  display: inline-flex;
+  align-items: center;
+}
+
+.loadingDot {
+  animation: filmDotPulse 1.4s ease-in-out infinite;
+  opacity: 0.15;
+}
+
+.topFade {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 40;
+  height: 6.5rem;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(250, 250, 250, 0.94) 0%,
+    rgba(250, 250, 250, 0.88) 24%,
+    rgba(250, 250, 250, 0.72) 42%,
+    rgba(250, 250, 250, 0.4) 68%,
+    rgba(250, 250, 250, 0) 100%
+  );
+}
+
+.bottomFade {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 16;
+  height: clamp(12rem, 31vh, 21rem);
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgb(250, 250, 250) 0%,
+    rgba(250, 250, 250, 0.98) 16%,
+    rgba(250, 250, 250, 0.92) 28%,
+    rgba(250, 250, 250, 0.76) 42%,
+    rgba(250, 250, 250, 0.5) 56%,
+    rgba(250, 250, 250, 0.24) 68%,
+    rgba(250, 250, 250, 0.1) 78%,
+    rgba(250, 250, 250, 0.03) 88%,
+    transparent 100%
+  );
+}
+
+.leftFade,
+.rightFade {
+  position: fixed;
+  z-index: 15;
+  width: 4.5rem;
+  pointer-events: none;
+}
+
+.leftFade {
+  left: 0;
+  bottom: 0;
+  top: calc(env(safe-area-inset-top, 0px) + clamp(5.25rem, 4.25rem + 6.5vh, 10.5rem));
+  background: linear-gradient(
+    to right,
+    rgb(250, 250, 250) 0%,
+    rgba(250, 250, 250, 0.95) 8%,
+    rgba(250, 250, 250, 0.84) 16%,
+    rgba(250, 250, 250, 0.7) 25%,
+    rgba(250, 250, 250, 0.54) 34%,
+    rgba(250, 250, 250, 0.38) 45%,
+    rgba(250, 250, 250, 0.24) 55%,
+    rgba(250, 250, 250, 0.12) 70%,
+    rgba(250, 250, 250, 0.04) 85%,
+    transparent 100%
+  );
+}
+
+.rightFade {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to left,
+    rgb(250, 250, 250) 0%,
+    rgba(250, 250, 250, 0.95) 8%,
+    rgba(250, 250, 250, 0.84) 16%,
+    rgba(250, 250, 250, 0.7) 25%,
+    rgba(250, 250, 250, 0.54) 34%,
+    rgba(250, 250, 250, 0.38) 45%,
+    rgba(250, 250, 250, 0.24) 55%,
+    rgba(250, 250, 250, 0.12) 70%,
+    rgba(250, 250, 250, 0.04) 85%,
+    transparent 100%
+  );
+}
+
+.headerButton {
+  position: fixed;
+  top: var(--top-safe);
+  z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 200ms ease;
+}
+
+.headerButton:hover {
+  opacity: 0.8;
+}
+
+.backButton {
+  left: var(--header-left);
+}
+
+.infoButton {
+  right: var(--header-right);
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-pill);
+  color: var(--color-text-subtle);
+  transition:
+    background-color 200ms ease,
+    color 200ms ease;
+}
+
+.infoButton:hover {
+  background: rgba(229, 231, 235, 0.65);
+  color: var(--color-text-muted);
+}
+
+.logoBadge {
+  width: 2rem;
+  height: 2rem;
+}
+
+.stripLayer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+
+.strip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  will-change: transform;
+}
+
+.frameButton {
+  position: absolute;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  transition:
+    box-shadow 220ms var(--ease-standard),
+    transform 220ms var(--ease-standard);
+}
+
+.frameButton:hover {
+  box-shadow: var(--shadow-card);
+  transform: translateY(-2px);
+}
+
+.frameButton:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+}
+
+.frameMedia {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 3px;
+}
+
+.placeholderSvg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.9) contrast(1.02) brightness(0.98);
+}
+
+.placeholderShell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-radius: 3px;
+  overflow: hidden;
+  background: #18181b;
+  box-shadow:
+    inset 0 0 0 1px rgba(24, 24, 27, 0.22),
+    inset 0 14px 30px rgba(24, 24, 27, 0.1),
+    inset 0 -26px 36px rgba(24, 24, 27, 0.18);
+}
+
+.placeholderShell::before,
+.placeholderShell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.placeholderShell::before {
+  background:
+    linear-gradient(180deg, rgba(255, 244, 214, 0.16) 0%, transparent 24%, transparent 72%, rgba(24, 24, 27, 0.12) 100%),
+    radial-gradient(circle at 12% 18%, rgba(248, 196, 112, 0.2), transparent 34%);
+  mix-blend-mode: screen;
+}
+
+.placeholderShell::after {
+  background:
+    linear-gradient(90deg, rgba(24, 24, 27, 0.24), transparent 12%, transparent 88%, rgba(24, 24, 27, 0.2)),
+    linear-gradient(180deg, rgba(24, 24, 27, 0.18), transparent 18%, transparent 82%, rgba(24, 24, 27, 0.22));
+}
+
+.timelineDock {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(0.5rem, 0.25rem + 2vh, 1.75rem);
+  z-index: 20;
+  display: flex;
+  justify-content: center;
+  padding-inline: 0.5rem;
+}
+
+.timelineInner {
+  position: relative;
+  width: min(92vw, 720px);
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.noteLabel {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  width: max-content;
+  max-width: min(92vw, 720px);
+  transform: translateX(-50%);
+  flex-direction: column;
+  align-items: center;
+  padding-inline: 0.5rem;
+  text-align: center;
+  color: var(--color-text);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: var(--leading-snug);
+}
+
+.timelineStage {
+  display: inline-flex;
+  min-width: 0;
+  transform: translate3d(var(--timeline-shift, 0px), 0, 0);
+}
+
+.timelineRail {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+  width: var(--timeline-width, auto);
+}
+
+.timelineSpacer {
+  flex: 0 0 64px;
+}
+
+.timelineNoteSpacer {
+  min-height: 1.7rem;
+  flex: 0 0 auto;
+}
+
+.timelineTabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  min-height: 100px;
+  padding-top: 0.75rem;
+  padding-bottom: 0.5rem;
+}
+
+.timelineTab {
+  display: inline-flex;
+  width: 6px;
+  justify-content: center;
+  align-items: flex-end;
+  margin-block: -0.25rem;
+  padding-block: 0.375rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  outline: none;
+}
+
+.timelineBar {
+  width: 1.5px;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  transition:
+    height 220ms var(--ease-standard),
+    background-color 220ms var(--ease-standard);
+}
+
+.timelineTabActive .timelineBar {
+  background: var(--color-accent-active);
+}
+
+.timelineMeta {
+  position: relative;
+  min-height: 2.5rem;
+  margin-top: 1rem;
+}
+
+.timelineMarker {
+  position: absolute;
+  top: 0;
+  display: flex;
+  transform: translateX(-50%);
+  flex-direction: column;
+  align-items: center;
+  white-space: nowrap;
+  transition:
+    left 240ms var(--ease-standard),
+    opacity 220ms var(--ease-standard);
+}
+
+.timelineMonth {
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.timelineYear {
+  margin-top: 0.125rem;
+  color: var(--color-text-subtle);
+  font-size: 0.875rem;
+  line-height: 1;
+}
+
+.timelineHover {
+  opacity: 0.6;
+}
+
+.heightFiller {
+  width: 100%;
+  background: var(--color-page);
+}
+
+.modalRoot {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 2rem;
+}
+
+.modalOverlay {
+  position: absolute;
+  inset: 0;
+  background: var(--color-overlay);
+  transition: opacity 300ms var(--ease-standard);
+}
+
+.modalPanel {
+  position: relative;
+  width: calc(100% * 6 / 12);
+  max-width: 56rem;
+  border-radius: var(--radius-xl);
+  background: var(--color-panel-solid);
+  box-shadow: var(--shadow-soft);
+  transition:
+    opacity 300ms var(--ease-standard),
+    transform 300ms var(--ease-standard);
+}
+
+.modalBody {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem 2rem 2rem;
+}
+
+.modalHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.modalTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.modalTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 1.125rem;
+}
+
+.modalYearDot,
+.modalYear {
+  color: var(--color-text-subtle);
+}
+
+.modalCopy {
+  max-width: 40rem;
+  color: #6b7280;
+  font-size: 1rem;
+  line-height: 1.25rem;
+}
+
+.toolSection {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f4f4f5;
+}
+
+.toolColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.toolLabel {
+  color: var(--color-text-subtle);
+  font-size: 0.875rem;
+}
+
+.toolValue {
+  color: #3f3f46;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+
+.heroCard {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 1097 / 616;
+  margin-top: 0.75rem;
+  border: 1px solid #f3f4f6;
+  border-radius: 1rem;
+  background: #f3f4f6;
+}
+
+.heroMedia {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.92) contrast(1.02);
+}
+
+.heroCaption {
+  position: absolute;
+  left: 1rem;
+  bottom: 1rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.74);
+  backdrop-filter: blur(12px);
+  color: var(--color-text-muted);
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+  .timelineDock {
+    left: 50%;
+    right: auto;
+    width: auto;
+    transform: translateX(-50%);
+    bottom: clamp(0.75rem, 0.375rem + 2.5vh, 3.25rem);
+    padding-inline: 0;
+  }
+}
+
+@media (min-width: 768px) {
+  .leftFade,
+  .rightFade {
+    width: 20vw;
+  }
+}
+
+@media (max-width: 767px) {
+  .modalRoot {
+    padding-inline: 1rem;
+  }
+
+  .modalPanel {
+    width: 95%;
+  }
+
+  .modalBody {
+    gap: 0.75rem;
+    padding: 1.25rem 1.5rem 1.5rem;
+  }
+
+  .toolSection {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .toolColumn {
+    flex-direction: row;
+    gap: 1.5rem;
+  }
+
+  .toolLabel {
+    width: 4.5rem;
+    flex: 0 0 auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .headerButton,
+  .infoButton,
+  .frameButton,
+  .timelineBar,
+  .timelineMarker,
+  .modalOverlay,
+  .modalPanel,
+  .loadingOverlay,
+  .heroCaption {
+    transition: none !important;
+  }
+
+  .loadingDot {
+    animation: none;
+    opacity: 0.35;
+  }
+
+  .frameButton:hover {
+    transform: none;
+  }
+}
+
+@keyframes filmDotPulse {
+  0%,
+  80%,
+  100% {
+    opacity: 0.15;
+  }
+
+  40% {
+    opacity: 1;
+  }
+}
