@@ -11,7 +11,6 @@ type TimelineProps = {
   hoveredIndex: number | null;
   onSelect: (index: number) => void;
   onHover: (index: number | null) => void;
-  viewportWidth: number;
 };
 
 function clamp(value: number, min: number, max: number) {
@@ -30,14 +29,12 @@ export function Timeline({
   hoveredIndex,
   onSelect,
   onHover,
-  viewportWidth,
 }: TimelineProps) {
   const activePhoto = photos[currentIndex];
   const activeIndex = clamp(progress, 0, Math.max(0, photos.length - 1));
 
   const timeline = useMemo(() => {
     const width = photos.length * 6 + Math.max(0, photos.length - 1) * 4;
-    const shift = -(currentIndex * 10) + Math.min(0, viewportWidth < 640 ? 0 : 3);
     const barHeights = photos.map((_, index) => {
       const distance = Math.abs(activeIndex - index);
       const intensity = smoothstep(1 - Math.min(1, distance / 6));
@@ -49,12 +46,11 @@ export function Timeline({
 
     return {
       width,
-      shift,
       barHeights,
       markerLeft,
       hoverLeft,
     };
-  }, [photos, currentIndex, hoveredIndex, activeIndex, viewportWidth]);
+  }, [photos, currentIndex, hoveredIndex, activeIndex]);
 
   if (!activePhoto) {
     return null;
@@ -64,8 +60,7 @@ export function Timeline({
     <div className={styles.timelineInner}>
       <div className={styles.noteLabel}>{activePhoto.note}</div>
 
-      <div className={styles.timelineStage} style={{ ["--timeline-shift" as string]: `${timeline.shift}px` }}>
-        <div className={styles.timelineSpacer} aria-hidden="true" />
+      <div className={styles.timelineStage}>
         <div className={styles.timelineRail} style={{ ["--timeline-width" as string]: `${timeline.width}px` }}>
           <div className={styles.timelineNoteSpacer} aria-hidden="true" />
 
@@ -113,7 +108,6 @@ export function Timeline({
             </div>
           </div>
         </div>
-        <div className={styles.timelineSpacer} aria-hidden="true" />
       </div>
     </div>
   );

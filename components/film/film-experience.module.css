@@ -303,7 +303,8 @@
 .timelineStage {
   display: inline-flex;
   min-width: 0;
-  transform: translate3d(var(--timeline-shift, 0px), 0, 0);
+  justify-content: center;
+  width: 100%;
 }
 
 .timelineRail {

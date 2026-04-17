@@ -672,7 +672,6 @@ export function FilmExperience() {
             hoveredIndex={hoveredIndex}
             onSelect={selectIndex}
             onHover={setHoveredIndex}
-            viewportWidth={viewport.width}
           />
         </div>
 
